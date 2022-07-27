@@ -1,39 +1,40 @@
 require "date"
 class Todo
-  def lAD(txt,dueDate,finish)
-    @txt=txt
-    @dueDate=dueDate
-    @finish=finish
+  def impile(text, dueDate, complete)
+    @text = text
+    @dueDate = dueDate
+    @complete = complete
   end
-  def dueToday?
-    @dueDate==Date.today
+  def due_today?
+    @dueDate == Date.today
   end
-  def dueLater?
-    @dueDate>Date.today
+  def due_later?
+    @dueDate > Date.today
   end
-  def overDue?
-    @dueDate<Date.today
+  def over_due?
+    @dueDate < Date.today
   end
   def to_displayable_string
-    tab=@finish ? "[x]" : "[ ]"
-    "#{tab} #{@txt} #{dueDate}"
+    tab = @complete ? "[x]" : "[ ]"
+    dueDate = due_today? ? "" : @dueDate
+    "#{tab} #{@text} #{dueDate}"
   end
 end
 class TodosList
   def initialize(todos)
-    @todos=todos
+    @todos = todos
   end
   def plus(todo)
-    @todos<<todo
+    @todos << todo
   end
-  def dueToday
-    TodosList.new(@todos.filter {|todo|todo.dueToday?})
+  def due_today
+    TodosList.new(@todos.filter { |todo| todo.due_today? })
   end
-  def dueLater
-    TodosList.new(@todos.filter {|todo|todo.dueLater?})
+  def due_later
+    TodosList.new(@todos.filter { |todo| todo.due_later? })
   end
-  def overDue
-    TodosList.new(@todos.filter {|todo|todo.overDue?})
+  def over_due
+    TodosList.new(@todos.filter { |todo| todo.over_due? })
   end
   def to_displayable_list
     @todos.map { |todo| todo.to_displayable_string }.join("\n")
@@ -41,23 +42,23 @@ class TodosList
 end
 date = Date.today
 todos = [
-  { txt: "Submit assignment", dueDate: date - 1, finish: false },
-  { txt: "Pay rent", dueDate: date, finish: true },
-  { txt: "File taxes", dueDate: date + 1, finish: false },
-  { txt: "Call Acme Corp.", dueDate: date + 1, finish: false },
+  { text: "Submit assignment", dueDate: date - 1, complete: false },
+  { text: "Pay rent", dueDate: date, complete: true },
+  { text: "File taxes", dueDate: date + 1, complete: false },
+  { text: "Call Acme Corp.", dueDate: date + 1, complete: false },
 ]
 todos = todos.map { |todo|
-  Todo.new(todo[:txt], todo[:dueDate], todo[:finish])
+  Todo.new(todo[:text], todo[:dueDate], todo[:complete])
 }
 todos_list = TodosList.new(todos)
 todos_list.plus(Todo.new("Service vehicle", date, false))
 puts "My Todo List\n\n"
-puts "overdue\n"
-puts todos_list.overDue.to_displayable_list
+puts "Over Due\n"
+puts todos_list.over_due.to_displayable_list
 puts "\n\n"
 puts "Due Today\n"
-puts todos_list.dueToday.to_displayable_list
+puts todos_list.due_today.to_displayable_list
 puts "\n\n"
 puts "Due Later\n"
-puts todos_list.dueLater.to_displayable_list
+puts todos_list.due_later.to_displayable_list
 puts "\n\n"
